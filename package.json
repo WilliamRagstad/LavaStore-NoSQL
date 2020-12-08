@@ -1,0 +1,28 @@
+{
+  "name": "lavastore-nosql",
+  "version": "1.0.0",
+  "description": "LavaStore NoSQL extension for performing database operation",
+  "main": "lib/LSNoSql.js",
+  "types": "lib/LSNoSql.d.ts",
+  "scripts": {
+    "test": "echo Error: no test specified",
+    "build": "del /S lib /Q && tsc"
+  },
+  "keywords": [
+    "lavastore",
+    "nosql"
+  ],
+  "author": "William Rågstad",
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://github.com/WilliamRagstad/LavaStore",
+  "devDependencies": {
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {
+    "lavastore": "^1.1.10"
+  }
+}
