@@ -1,7 +1,7 @@
 {
   "name": "lavastore-nosql",
   "version": "1.0.0",
-  "description": "LavaStore NoSQL extension for performing database operation",
+  "description": "LavaStore NoSQL extension for performing database operations",
   "main": "lib/LSNoSql.js",
   "types": "lib/LSNoSql.d.ts",
   "scripts": {
