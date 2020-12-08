@@ -12,18 +12,29 @@ import { LSDocument } from "lavastore";
         API: https://jsstore.net/tutorial/get-started/
 */
 
-export class LSNoSql {
+class LSNoSql {
     private document;
     constructor(document: LSDocument) {
         this.document = document;
     }
 
-    public Query = {
-        Select: (query: {
-            from: string,
-            where?: object
-        }) => {
-            this.document.DocumentPath(query.from)
+    public Select(query: {
+        from: string,
+        where?: object
+    }) {
+        const results: LSDocument[] = [];
+        const documents = Object.values(this.document.CollectionPath(query.from).documents);
+        const whereFields = Object.entries(query.where ?? {});
+        for (let i = 0; i < documents.length; i++) {
+            const d = documents[i];
+            if (query.where) {
+                const dFields = d.Get() as Object;
+                if (whereFields.every(([key, val]: [string, any]) => key in dFields && (dFields as any)[key] === val)) results.push(d);
+            }
+            else results.push(d);
         }
-    };
+        return results;
+    }
 }
+
+export default LSNoSql;
