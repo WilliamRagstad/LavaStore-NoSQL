@@ -12,7 +12,7 @@ import { LSDocument } from "lavastore";
         API: https://jsstore.net/tutorial/get-started/
 */
 
-class LSNoSql {
+class LSQL {
     private document;
     constructor(document: LSDocument) {
         this.document = document;
@@ -37,4 +37,4 @@ class LSNoSql {
     }
 }
 
-export default LSNoSql;
+export default LSQL;

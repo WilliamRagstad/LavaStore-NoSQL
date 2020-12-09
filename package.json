@@ -1,9 +1,9 @@
 {
-  "name": "lavastore-nosql",
+  "name": "lavastore-ql",
   "version": "1.0.2",
-  "description": "LavaStore NoSQL extension for performing database operations",
-  "main": "lib/LSNoSql.js",
-  "types": "lib/LSNoSql.d.ts",
+  "description": "LavaStore extension for performing local database operations",
+  "main": "lib/LSQL.js",
+  "types": "lib/LSQL.d.ts",
   "scripts": {
     "test": "echo Error: no test specified",
     "build": "del /S lib /Q && tsc"
