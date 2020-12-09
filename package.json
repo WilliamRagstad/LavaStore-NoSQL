@@ -1,6 +1,6 @@
 {
   "name": "lavastore-ql",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "LavaStore extension for performing local database operations",
   "main": "lib/LSQL.js",
   "types": "lib/LSQL.d.ts",
@@ -15,7 +15,8 @@
   "keywords": [
     "lavastore",
     "query",
-    "nosql",
+    "language",
+    "ql",
     "sql",
     "websql"
   ],
