@@ -40,6 +40,6 @@ const results = q.Select({
      id: "hello",
      fields: { id: 0, value: "Hello, world!" },
      collections: {}
-*/ }]
+   }]*/
 ```
 
