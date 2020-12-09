@@ -36,6 +36,10 @@ const results = q.Select({
         id: 0
     }
 });
-// results = [LSDocument { id: 0, value: "Hello, world!" }]
+/* results = [LSDocument {
+     id: "hello",
+     fields: { id: 0, value: "Hello, world!" },
+     collections: {}
+*/ }]
 ```
 
