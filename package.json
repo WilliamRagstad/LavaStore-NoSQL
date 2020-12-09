@@ -1,6 +1,6 @@
 {
   "name": "lavastore-ql",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "LavaStore extension for performing local database operations",
   "main": "lib/LSQL.js",
   "types": "lib/LSQL.d.ts",
