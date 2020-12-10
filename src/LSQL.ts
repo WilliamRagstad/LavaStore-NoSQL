@@ -8,6 +8,7 @@
     2020-12-08
 
     API inspired by: https://jsstore.net/tutorial/get-started/
+    and Run method by: https://github.com/ujjwalguptaofficial/sqlweb
 */
 
 import { LSDocument } from "lavastore";
@@ -50,12 +51,12 @@ class LSQL {
      * @returns true if successful.
      */
     public Insert(query: {
-        to: string,
+        into: string,
         document?: LSDocument,
         data?: object
     }) {
         const document = query.document ?? new LSDocument(this.newID(), query.data);
-        const collection = this.document.CollectionPath(query.to);
+        const collection = this.document.CollectionPath(query.into);
         if (collection.Contains(document.id)) {
             console.warn(`Collection ${collection.id} already contains a document with the id ${document.id}.`)
             return false;
@@ -98,6 +99,90 @@ class LSQL {
         let count = 0;
         this.Select(query).forEach(d => ++count && delete (d.parent as any)[d.id]);
         return count;
+    }
+
+    private parseSQL = (query: string): {
+        api: Extract<keyof LSQL, string>,
+        query: object
+    } => {
+        const result = {
+            api: 'undefined' as Extract<keyof LSQL, string>,
+            query: {} as any
+        };
+
+        query = query.trim();
+        function peek(matchFunc: ((query: string) => string)) {
+            const match = matchFunc(query);
+            if (!query.startsWith(match)) throw new Error("Invalid order! Match must target start of query.");
+            return match;
+        }
+        function consume(matchFunc: ((query: string) => string)) {
+            const match = peek(matchFunc);
+            query = query.replace(match, '').trimStart();
+            return match;
+        }
+        const peekNext = () => peek(q => q.split(' ')[0]);
+        const nextToken = () => consume(q => q.split(' ')[0]);
+
+        // Parse action
+        const action = nextToken().toLowerCase();
+        let actionFound = false;
+        for (var member in this) {
+            if (member.toLowerCase() === action) {
+                if (typeof this[member] == "function") { // Methods only
+                    result.api = member as Extract<keyof LSQL, string>;
+                    actionFound = true;
+
+                    if (peekNext() === '*') nextToken(); // Throw away next token
+
+                    // Special cases where a collection name is provided immediately after action
+                    if (action === 'update') result.query.in = nextToken();
+                }
+            }
+        }
+        if (!actionFound) throw new Error(`Action '${action}' is not valid or yet implemented in LSQL.`);
+
+        const comparisonOperators = ['=', '<', '>', '<=', '>=', '!='];
+        const castToType = (value: string): any => !isNaN(parseFloat(value)) ? Number(value) : (() => { try { return JSON.parse(value.replaceAll('\'', '')) } catch { return value.replaceAll('\'', '') } })()
+        // Parse query attributes
+        let token = nextToken();
+        while (token) {
+            // Parse attribute pair: 'FROM table_name'
+            const key = token.toLowerCase();
+            switch (key) {
+                case 'where':
+                    let n = peekNext();
+                    let fields = {};
+                    while (n) {
+                        if (!comparisonOperators.some(o => n.includes(o))) break;
+                        nextToken(); // consume it
+                        const attr = n.trim().split('=');
+                        fields = {
+                            ...fields,
+                            [attr[0]]: [castToType(attr[1])]
+                        }
+                        if (peekNext() !== '&&') break;
+                        nextToken(); // Throw away &&
+                        n = peekNext();
+                    }
+                    result.query[key] = fields;
+                default:
+                    result.query[key] = nextToken();
+                    break;
+            }
+            token = nextToken();
+        }
+
+        return result;
+    }
+
+    /**
+     * Run SQL formatted queries
+     * @param query SQL. Read more about the query syntax here: https://github.com/ujjwalguptaofficial/sqlweb/wiki
+     */
+    public Run(query: string): any {
+        const result = this.parseSQL(query);
+        return (this as any)[result.api](result.query);
     }
 }
 
